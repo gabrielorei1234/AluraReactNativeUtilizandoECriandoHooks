@@ -1,19 +1,34 @@
-import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import React, { useReducer, useMemo } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Estrelas from '../../../componentes/Estrelas';
 
-export default function Produtor({nome, imagem, distancia, estrelas}) {
+export default function Produtor({ nome, imagem, distancia, estrelas }) {
+  const [selecionado, inverterSelecionado] = useReducer((selecionado)=> !selecionado,false)
+
+  const distanciaEmMetros = (distancia) => {
+    console.log("Distancia Em Metros");
+  return `${distancia}m`;
+}
+
+const distanciaTexto = useMemo(
+  () => distanciaEmMetros(distancia),[distancia]);
+
   return (
-    <View style={estilos.cartao}>
+    <TouchableOpacity style={estilos.cartao}
+    onPress={inverterSelecionado}>
       <Image style={estilos.imagem} source={imagem} accessibilityLabel={nome} />
       <View style={estilos.informacoes}>
         <View>
-        <Text style={estilos.nome}>{nome}</Text>
-        <Estrelas quantidade={estrelas}/>
-        </View>        
-        <Text style={estilos.distancia}>{distancia}</Text>
+          <Text style={estilos.nome}>{nome}</Text>
+          <Estrelas quantidade={estrelas}
+            editavel={selecionado}
+            grande={selecionado}
+          />
+        </View>
+        <Text style={estilos.distancia}>{distanciaTexto}</Text>
       </View>
-    </View>
+
+    </TouchableOpacity>
   );
 }
 
@@ -25,12 +40,12 @@ const estilos = StyleSheet.create({
     borderRadius: 6,
     flexDirection: 'row',
     //Android
-     elevation: 4,
+    elevation: 4,
     //IOS
-    shadowColor:'#000',
-    shadowOffset:{
-        width: 0,
-        height: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62
